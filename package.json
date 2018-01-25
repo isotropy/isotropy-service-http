@@ -1,0 +1,25 @@
+{
+  "name": "isotropy-service-http",
+  "version": "0.0.1",
+  "author": "Isotropy Team<isotropy@agilehead.com>",
+  "contributors": [
+    "Jeswin Kumar<jeswinpk@agilehead.com>"
+  ],
+  "scripts": {
+    "build": "./build.sh",
+    "test": "mocha dist/test/test.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@types/koa": "^2.0.43",
+    "@types/node": "^8.0.57",
+    "koa": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.44",
+    "@types/should": "^11.2.0",
+    "mocha": "*",
+    "should": "*"
+  }
+}
