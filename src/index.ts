@@ -1,8 +1,15 @@
+import koa = require("koa");
+import koaStatic = require("koa-static");
+import koaMount = require("koa-mount");
+
+import exception from "./exception";
+
 export interface ServiceConfig {
+  type: string;
   name: string;
   nodes?: number;
-  type: string;
   modules: string[];
+  port?: number
 }
 
 export interface HttpServiceLocation {
@@ -24,16 +31,38 @@ export interface HttpServiceConfig extends ServiceConfig {
   locations: HttpServiceLocation[];
 }
 
-async function handleProxyLocation() {
-
+async function handleNodeJSLocation(
+  location: HttpServiceNodeJSLocation,
+  config: HttpServiceConfig
+) {
+  return require(location.main);
 }
 
-async function handleStaticLocation() {
-
+async function handleStaticLocation(
+  location: HttpServiceStaticLocation,
+  config: HttpServiceConfig
+) {
+  const app = new koa();
+  app.use(koaStatic(location.path));
+  return app;
 }
 
 export async function run(config: HttpServiceConfig) {
-  for (const location of config.locations) {
-    
+  const app = new koa();
+
+  for (const loc of config.locations) {
+    const subApp = loc.type === "static"
+    ? await handleStaticLocation(loc as HttpServiceStaticLocation, config)
+    : loc.type === "nodejs"
+      ? await handleNodeJSLocation(loc as HttpServiceNodeJSLocation, config)
+      : exception(
+          `The location type ${
+            loc.type
+          } is unsupported. Valid options are 'static' or 'proxy'.`
+        )
+
+      app.use(koaMount(loc.location, subApp));
   }
+
+  app.listen(config.port || 8080)
 }

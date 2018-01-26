@@ -13,8 +13,12 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@types/koa": "^2.0.43",
+    "@types/koa-mount": "^3.0.0",
+    "@types/koa-static": "^4.0.0",
     "@types/node": "^8.0.57",
-    "koa": "^2.4.1"
+    "koa": "^2.4.1",
+    "koa-mount": "^3.0.0",
+    "koa-static": "^4.0.2"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.44",
