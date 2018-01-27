@@ -39,8 +39,8 @@ async function handleNodeJSLocation(
   config: HttpServiceConfig
 ) {
   const mod = require(location.main);
-  const app = await (mod.default ? mod.default() : mod());
-  return app;
+  const app = mod.default || mod;
+  return typeof app === "function" ? app() : app;
 }
 
 async function handleStaticLocation(
