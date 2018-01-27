@@ -16,14 +16,17 @@
     "@types/koa-mount": "^3.0.0",
     "@types/koa-static": "^4.0.0",
     "@types/node": "^8.0.57",
+    "isotropy-webserver": "^0.0.6",
     "koa": "^2.4.1",
     "koa-mount": "^3.0.0",
     "koa-static": "^4.0.2"
   },
   "devDependencies": {
-    "@types/mocha": "^2.2.44",
-    "@types/should": "^11.2.0",
+    "@types/mocha": "^2.2.47",
+    "@types/should": "^13.0.0",
+    "@types/supertest": "^2.0.4",
     "mocha": "*",
-    "should": "*"
+    "should": "*",
+    "supertest": "^3.0.0"
   }
 }
