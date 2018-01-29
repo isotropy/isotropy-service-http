@@ -1,4 +1,5 @@
 import koa = require("koa");
+import * as path from "path";
 import { Server } from "http";
 import koaStatic = require("koa-static");
 import koaMount = require("koa-mount");
@@ -35,32 +36,45 @@ export interface HttpServiceConfig extends ServiceConfig {
 }
 
 async function handleNodeJSLocation(
+  projectDir: string,
   location: HttpServiceNodeJSLocation,
   config: HttpServiceConfig
 ) {
-  const mod = require(location.main);
+  const mod = require(path.join(projectDir, location.main));
   const app = mod.default || mod;
   return typeof app === "function" ? app() : app;
 }
 
 async function handleStaticLocation(
+  projectDir: string,
   location: HttpServiceStaticLocation,
   config: HttpServiceConfig
 ) {
   const app = new koa();
-  app.use(koaStatic(location.path));
+  app.use(koaStatic(path.join(projectDir, location.path)));
   return app;
 }
 
-export default async function run(config: HttpServiceConfig) {
+export default async function run(
+  projectDir: string,
+  config: HttpServiceConfig
+) {
   const app = new koa();
 
   for (const loc of config.locations) {
     const subApp =
       loc.type === "static"
-        ? await handleStaticLocation(loc as HttpServiceStaticLocation, config)
+        ? await handleStaticLocation(
+            projectDir,
+            loc as HttpServiceStaticLocation,
+            config
+          )
         : loc.type === "nodejs"
-          ? await handleNodeJSLocation(loc as HttpServiceNodeJSLocation, config)
+          ? await handleNodeJSLocation(
+              projectDir,
+              loc as HttpServiceNodeJSLocation,
+              config
+            )
           : exception(
               `The location type ${
                 loc.type

@@ -5,6 +5,8 @@ import * as path from "path";
 import request = require("supertest");
 import service from "../";
 
+const projectDir = path.join(__dirname);
+
 describe("isotropy-service-http", async () => {
   ["", "/static"].forEach(url => {
     it(`mounts a static directory as ${url}`, async () => {
@@ -15,12 +17,12 @@ describe("isotropy-service-http", async () => {
           {
             type: "static",
             location: url || "/",
-            path: path.join(__dirname, "fixtures", "static")
+            path: "./fixtures/static"
           }
         ],
         listen: false
       };
-      const app = await service(config);
+      const app = await service(projectDir, config);
 
       const server = app.listen();
       const response = await request(server)
@@ -41,12 +43,12 @@ describe("isotropy-service-http", async () => {
           {
             type: "nodejs",
             location: url || "/",
-            main: path.join(__dirname, "fixtures", "nodejs")
+            main: "./fixtures/nodejs"
           }
         ],
         listen: false
       };
-      const app = await service(config);
+      const app = await service(projectDir, config);
 
       const server = app.listen();
       const response = await request(server)
@@ -66,22 +68,22 @@ describe("isotropy-service-http", async () => {
         {
           type: "static",
           location: "/static",
-          path: path.join(__dirname, "fixtures", "static")
+          path: "./fixtures/static"
         },
         {
           type: "static",
           location: "/",
-          path: path.join(__dirname, "fixtures", "docs")
+          path: "./fixtures/docs"
         },
         {
           type: "nodejs",
           location: "/",
-          main: path.join(__dirname, "fixtures", "nodejs")
+          main: "./fixtures/nodejs"
         }
       ],
       listen: false
     };
-    const app = await service(config);
+    const app = await service(projectDir, config);
 
     const server = app.listen();
 
