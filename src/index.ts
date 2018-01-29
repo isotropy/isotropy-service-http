@@ -52,7 +52,7 @@ async function handleStaticLocation(
   return app;
 }
 
-export async function run(config: HttpServiceConfig) {
+export default async function run(config: HttpServiceConfig) {
   const app = new koa();
 
   for (const loc of config.locations) {

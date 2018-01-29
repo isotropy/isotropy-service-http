@@ -3,7 +3,7 @@ import "should";
 import Server from "isotropy-webserver";
 import * as path from "path";
 import request = require("supertest");
-import * as service from "../";
+import service from "../";
 
 describe("isotropy-service-http", async () => {
   ["", "/static"].forEach(url => {
@@ -20,7 +20,7 @@ describe("isotropy-service-http", async () => {
         ],
         listen: false
       };
-      const app = await service.run(config);
+      const app = await service(config);
 
       const server = app.listen();
       const response = await request(server)
@@ -46,7 +46,7 @@ describe("isotropy-service-http", async () => {
         ],
         listen: false
       };
-      const app = await service.run(config);
+      const app = await service(config);
 
       const server = app.listen();
       const response = await request(server)
@@ -81,7 +81,7 @@ describe("isotropy-service-http", async () => {
       ],
       listen: false
     };
-    const app = await service.run(config);
+    const app = await service(config);
 
     const server = app.listen();
 
