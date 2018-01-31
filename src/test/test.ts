@@ -60,51 +60,54 @@ describe("isotropy-service-http", async () => {
     });
   });
 
-  it(`mounts a static and nodejs location together`, async () => {
-    const config = {
-      name: "server",
-      type: "http",
-      locations: [
-        {
-          type: "static",
-          location: "/static",
-          path: "./fixtures/static"
-        },
-        {
-          type: "static",
-          location: "/",
-          path: "./fixtures/docs"
-        },
-        {
-          type: "nodejs",
-          location: "/",
-          main: "./fixtures/nodejs"
-        }
-      ],
-      listen: false
-    };
-    const app = await service(projectDir, config);
+  [["/static", ""], ["", "/nodejs"]].forEach(([staticLoc, nodeLoc]) => {
+    it(`mounts static (${staticLoc || "/"}) and nodejs (${nodeLoc ||
+      "/"}) locations`, async () => {
+      const config = {
+        name: "server",
+        type: "http",
+        locations: [
+          {
+            type: "static",
+            location: staticLoc || "/",
+            path: "./fixtures/static"
+          },
+          {
+            type: "static",
+            location: "/",
+            path: "./fixtures/docs"
+          },
+          {
+            type: "nodejs",
+            location: nodeLoc || "/",
+            main: "./fixtures/nodejs"
+          }
+        ],
+        listen: false
+      };
+      const app = await service(projectDir, config);
 
-    const server = app.listen();
+      const server = app.listen();
 
-    const response1 = await request(server)
-      .get(`/static/hello.txt`)
-      .expect(200);
+      const response1 = await request(server)
+        .get(`${staticLoc}/hello.txt`)
+        .expect(200);
 
-    response1.text.should.equal("hello, world!");
+      response1.text.should.equal("hello, world!");
 
-    const response2 = await request(server)
-      .get(`/hello`)
-      .expect(200);
+      const response2 = await request(server)
+        .get(`${nodeLoc}/hello`)
+        .expect(200);
 
-    response2.text.should.equal("hello, world");
+      response2.text.should.equal("hello, world");
 
-    const response3 = await request(server)
-      .get(`/readme.txt`)
-      .expect(200);
+      const response3 = await request(server)
+        .get(`/readme.txt`)
+        .expect(200);
 
-    response3.text.should.equal("Nothing to see here.");
+      response3.text.should.equal("Nothing to see here.");
 
-    server.close();
+      server.close();
+    });
   });
 });
